@@ -6,6 +6,7 @@
     "node": ">= 12.13 <13"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.5",
     "@types/jest": "~25.1.2",
     "@types/node": "~12.12.27",
     "@typescript-eslint/eslint-plugin": "~2.19.2",
@@ -13,19 +14,24 @@
     "eslint": "~6.8.0",
     "eslint-config-prettier": "~6.10.0",
     "eslint-plugin-jest": "~23.7.0",
+    "http-server": "^0.12.1",
     "jest": "~25.1.0",
+    "playwright": "^0.11.1",
     "prettier": "~1.19.1",
     "rimraf": "~3.0.2",
     "ts-jest": "~25.2.0",
-    "tsutils": "~3.17.0",
     "typescript": "~3.8.2"
   },
+  "peerDependencies": {
+    "playwright-core": "0.11.1"
+  },
   "scripts": {
-    "clean": "rimraf coverage build tmp",
+    "clean": "rimraf build tmp",
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest --coverage",
+    "test": "jest",
+    "test:server": "http-server ./tests/assets",
     "test:watch": "jest --watch"
   },
   "license": "Apache-2.0",
