@@ -1,4 +1,8 @@
-export const serializeAttributes = (element: HTMLElement): object => {
+export interface AttributeMap {
+  [key: string]: string;
+}
+
+export const serializeAttributes = (element: HTMLElement): AttributeMap => {
   const attributes = element.attributes;
   const serialized = {};
 
@@ -10,7 +14,7 @@ export const serializeAttributes = (element: HTMLElement): object => {
   return serialized;
 };
 
-const serializeElement = (element: HTMLElement): object => {
+const serializeElement = (element: HTMLElement): AttributeMap => {
   const attributes = serializeAttributes(element);
 
   return {
@@ -22,7 +26,7 @@ const serializeElement = (element: HTMLElement): object => {
 
 export const serializeElementAndDescendants = (
   element: HTMLElement,
-): object[] => {
+): AttributeMap[] => {
   const attributes = [serializeElement(element)];
 
   for (let i = 0; i < element.children.length; i++) {

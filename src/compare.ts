@@ -1,8 +1,16 @@
-import { serializeAttributes, unique } from './utils';
+import { AttributeMap, serializeAttributes, unique } from './utils';
+
+export interface Comparison {
+  additional: string[]; // on other, missing from target
+  different: string[]; // different on target and other
+  matching: string[]; // same on target and other
+  missing: string[]; // on target, missing from other
+}
 
 export interface ElementComparison {
-  attributes: string[];
-  matchingAttributes: string[];
+  attributes: Comparison;
+  classes: Comparison;
+  labels: Comparison;
 }
 
 const cleanText = (text = ''): string => {
@@ -16,86 +24,117 @@ const cleanText = (text = ''): string => {
   return cleaned;
 };
 
-const compareListAttributes = (
-  key: string,
-  a?: string,
-  b?: string,
-): ElementComparison => {
-  const attributes = [];
-  const matchingAttributes = [];
+// TODO add tests
+export const compareListAttributes = (
+  target?: string,
+  other?: string,
+): Comparison => {
+  const additional = [];
+  const matching = [];
+  const missing = [];
 
-  const aValues: string[] = (a || '').split(' ');
-  const bValues: string[] = (b || '').split(' ');
+  const targetValues: string[] = (target || '').split(' ');
+  const otherValues: string[] = (other || '').split(' ');
 
-  unique(aValues.concat(bValues)).forEach(name => {
-    const matchKey = `${key}.${name}`;
-
-    attributes.push(matchKey);
-    if (aValues.includes(name) && bValues.includes(name)) {
-      matchingAttributes.push(matchKey);
+  unique(targetValues.concat(otherValues)).forEach(name => {
+    if (targetValues.includes(name) && otherValues.includes(name)) {
+      matching.push(name);
+      return;
     }
+
+    if (targetValues.includes(name)) {
+      missing.push(name);
+      return;
+    }
+
+    additional.push(name);
   });
 
-  return { attributes, matchingAttributes };
+  return { additional, different: [], matching, missing };
 };
 
 export const compareAttributes = (
-  a: HTMLElement,
-  b: HTMLElement,
-): ElementComparison => {
-  const attributesA = serializeAttributes(a);
-  const attributesB = serializeAttributes(b);
+  targetAttributes: AttributeMap,
+  otherAttributes: AttributeMap,
+): Comparison => {
+  const additional = [];
+  const different = [];
+  const matching = [];
+  const missing = [];
 
-  const attributes = [];
-  const matchingAttributes = [];
+  unique(
+    Object.keys(targetAttributes).concat(Object.keys(otherAttributes)),
+  ).forEach(key => {
+    // ignore dynamic attributes
+    if (key === 'data-reactid') return;
+    // ignore class and labels since list attributes handled separately
+    if (['class', 'labels'].includes(key)) return;
 
-  unique(Object.keys(attributesA).concat(Object.keys(attributesB))).forEach(
-    key => {
-      // ignore dynamic attributes
-      if (key === 'data-reactid') return;
+    if (targetAttributes[key] === otherAttributes[key]) {
+      matching.push(key);
+      return;
+    }
 
-      if (['class', 'labels'].includes(key)) {
-        const listAttributes = compareListAttributes(
-          key,
-          attributesA[key],
-          attributesB[key],
-        );
+    if (targetAttributes[key] && otherAttributes[key]) {
+      different.push(key);
+      return;
+    }
 
-        attributes.push(...listAttributes.attributes);
-        matchingAttributes.push(...listAttributes.matchingAttributes);
-      } else {
-        attributes.push(key);
-        if (attributesA[key] === attributesB[key]) {
-          matchingAttributes.push(key);
-        }
-      }
-    },
-  );
+    if (targetAttributes[key]) {
+      missing.push(key);
+      return;
+    }
 
-  return { attributes, matchingAttributes };
+    additional.push(key);
+  });
+
+  return { additional, different, matching, missing };
 };
 
-export const isTagSame = (a: HTMLElement, b: HTMLElement): boolean => {
-  return a.tagName.toLowerCase() === b.tagName.toLowerCase();
+export const isTagSame = (target: HTMLElement, other: HTMLElement): boolean => {
+  return target.tagName.toLowerCase() === other.tagName.toLowerCase();
 };
 
-export const isTextSame = (a: HTMLElement, b: HTMLElement): boolean => {
-  return cleanText(a.innerText || '') === cleanText(b.innerText || '');
+export const compareText = (
+  target: HTMLElement,
+  other: HTMLElement,
+): keyof Comparison => {
+  const targetText = cleanText(target.innerText || '');
+  const otherText = cleanText(other.innerText || '');
+
+  if (targetText === otherText) return 'matching';
+  if (!otherText) return 'missing';
+  if (!targetText) return 'additional';
+
+  return 'different';
 };
 
 export const compareElements = (
-  a: HTMLElement,
-  b: HTMLElement,
+  target: HTMLElement,
+  other: HTMLElement,
 ): ElementComparison => {
-  const comparison = compareAttributes(a, b);
-  comparison.attributes.push('innerText', 'tag');
+  const targetAttributes = serializeAttributes(target);
+  const otherAttributes = serializeAttributes(other);
 
-  if (isTextSame(a, b)) {
-    comparison.matchingAttributes.push('innerText');
-  }
-  if (isTagSame(a, b)) {
-    comparison.matchingAttributes.push('tag');
+  const classes = compareListAttributes(
+    targetAttributes.class,
+    otherAttributes.class,
+  );
+  const labels = compareListAttributes(
+    targetAttributes.labels,
+    otherAttributes.labels,
+  );
+
+  const attributes = compareAttributes(targetAttributes, otherAttributes);
+
+  if (isTagSame(target, other)) {
+    attributes.matching.push('tag');
+  } else {
+    attributes.different.push('tag');
   }
 
-  return comparison;
+  const textComparison = compareText(target, other);
+  attributes[textComparison].push('innerText');
+
+  return { attributes, classes, labels };
 };

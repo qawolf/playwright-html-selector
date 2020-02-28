@@ -13,9 +13,6 @@
 
 // comparison.ts
 // { attributes, isTextSame, isTagSame }
-// const compareAttributes = () => {};
-// const compareTag = () => {};
-// const compareText = () => {};
 
 // const compareNodes = (node: Node, otherNode: Node) => {
 //   //

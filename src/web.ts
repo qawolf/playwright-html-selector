@@ -10,11 +10,17 @@ import { htmlToElement } from './htmlToElement';
 import { serializeElementAndDescendants } from './utils';
 
 export interface HtmlSelectorWeb {
-  compareAttributes: (a: HTMLElement, b: HTMLElement) => ElementComparison;
-  compareElements: (a: HTMLElement, b: HTMLElement) => ElementComparison;
+  compareAttributes: (
+    target: HTMLElement,
+    other: HTMLElement,
+  ) => ElementComparison;
+  compareElements: (
+    target: HTMLElement,
+    other: HTMLElement,
+  ) => ElementComparison;
   htmlToElement: (html: string) => HTMLElement;
-  isTagSame: (a: HTMLElement, b: HTMLElement) => boolean;
-  isTextSame: (a: HTMLElement, b: HTMLElement) => boolean;
+  isTagSame: (target: HTMLElement, other: HTMLElement) => boolean;
+  isTextSame: (target: HTMLElement, other: HTMLElement) => boolean;
   serializeElementAndDescendants: (element: HTMLElement) => object[];
 }
 
