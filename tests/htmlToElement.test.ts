@@ -8,7 +8,7 @@ describe('htmlToElement', () => {
   let page: Page;
 
   beforeAll(async () => {
-    browser = await chromium.launch({ headless: false });
+    browser = await chromium.launch();
     page = await browser.newPage();
     await addHtmlSelectorWeb(page);
     await page.goto(`${TestUrl}click.html`);
