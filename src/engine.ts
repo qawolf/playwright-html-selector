@@ -1,3 +1,38 @@
+import { htmlToElement } from './htmlToElement';
+
+// <a><div>Yo!</div><span>Sup</span></a>
+
+// Selector must not have siblings
+// <a><div><span>Sup</span></div></a>
+
+// Check selector is flat, throw an error otherwise
+// Compare the selector descendant first, then parent and parent
+
+// numChildren
+// isTagMatch
+// isTypeable
+// isSelectable
+
+// comparison.ts
+// { attributes, isTextSame, isTagSame }
+const compareAttributes = () => {};
+const compareTag = () => {};
+const compareText = () => {};
+
+const compareNodes = (node: Node, otherNode: Node) => {
+  //
+};
+
+const compareAncestors = () => {};
+
+const matchNodes = (node: Node, otherNode: Node) => {
+  return {
+    // match info
+    percent: 100,
+    node,
+  };
+};
+
 export const createEngine = {
   name: 'html',
 
@@ -13,8 +48,7 @@ export const createEngine = {
   },
 
   queryAll(root: Node, selector: string): null {
-    console.log(root, selector);
-    return null;
-    // return Array.from(root.querySelectorAll(selector));
+    const selectorElement = htmlToElement(selector);
+    return findMatchingDescendants(root, selectorElement);
   },
 };
