@@ -55,6 +55,14 @@ export const compareAttributes = (
   return { attributes, matchingAttributes };
 };
 
+export const isTagSame = (a: HTMLElement, b: HTMLElement): boolean => {
+  return a.tagName.toLowerCase() === b.tagName.toLowerCase();
+};
+
+export const isTextSame = (a: HTMLElement, b: HTMLElement): boolean => {
+  return cleanText(a.innerText || '') === cleanText(b.innerText || '');
+};
+
 export const compareElements = (
   a: HTMLElement,
   b: HTMLElement,
@@ -70,12 +78,4 @@ export const compareElements = (
   }
 
   return comparison;
-};
-
-export const isTagSame = (a: HTMLElement, b: HTMLElement): boolean => {
-  return a.tagName.toLowerCase() === b.tagName.toLowerCase();
-};
-
-export const isTextSame = (a: HTMLElement, b: HTMLElement): boolean => {
-  return cleanText(a.innerText || '') === cleanText(b.innerText || '');
 };
