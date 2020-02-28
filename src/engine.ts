@@ -1,5 +1,3 @@
-import { someHelper } from './parser';
-
 export const createEngine = {
   name: 'html',
 
@@ -9,7 +7,7 @@ export const createEngine = {
   },
 
   query(root: Node, selector: string): null {
-    console.log(root, selector, someHelper());
+    console.log(root, selector);
     return null;
     // return root.querySelector(selector);
   },

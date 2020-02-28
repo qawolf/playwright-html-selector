@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
@@ -10,7 +12,7 @@ export default {
     name: 'htmlselector',
     strict: false,
   },
-  onwarn: (warning, next): void => {
+  onwarn: (warning, next) => {
     if (warning.code === 'THIS_IS_UNDEFINED') return;
     next(warning);
   },
