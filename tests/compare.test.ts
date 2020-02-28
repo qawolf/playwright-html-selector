@@ -1,4 +1,5 @@
 import { Browser, chromium, Page } from 'playwright';
+import { AttributeComparison } from '../src/compare';
 import { addHtmlSelectorWeb } from '../src/register';
 import { HtmlSelectorWeb } from '../src/web';
 import { TestUrl } from './utils';
@@ -7,9 +8,9 @@ let browser: Browser;
 let page: Page;
 
 const buildCompareFunction = (
-  functionName: 'isTagSame' | 'isTextSame',
-): ((a: string, b: string) => Promise<boolean>) => {
-  return (a: string, b: string): Promise<boolean> => {
+  functionName: 'compareAttributes' | 'isTagSame' | 'isTextSame',
+): ((a: string, b: string) => Promise<AttributeComparison | boolean>) => {
+  return (a: string, b: string): Promise<AttributeComparison | boolean> => {
     return page.evaluate(
       (functionName, a, b) => {
         const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
@@ -25,6 +26,7 @@ const buildCompareFunction = (
   };
 };
 
+const compareAttributes = buildCompareFunction('compareAttributes');
 const isTagSame = buildCompareFunction('isTagSame');
 const isTextSame = buildCompareFunction('isTextSame');
 
@@ -37,6 +39,44 @@ describe('compare', () => {
   });
 
   afterAll(() => browser.close());
+
+  describe('compareAttributes', () => {
+    it('compares attributes', async () => {
+      const result = await compareAttributes(
+        '<a data-qa="home" id="link">Home</a>',
+        '<a data-qa="home" id="link2">Home</a>',
+      );
+
+      expect(result).toEqual({
+        attributes: ['data-qa', 'id'],
+        matchingAttributes: ['data-qa'],
+      });
+    });
+
+    it('handles attributes with multiple values', async () => {
+      const result = await compareAttributes(
+        '<a class="submit" data-qa="home" id="link">Home</a>',
+        '<a class="logo submit" data-qa="home" id="link2">Home</a>',
+      );
+
+      expect(result).toEqual({
+        attributes: ['class.submit', 'class.logo', 'data-qa', 'id'],
+        matchingAttributes: ['class.submit', 'data-qa'],
+      });
+    });
+
+    it('ignores data-reactid', async () => {
+      const result = await compareAttributes(
+        '<a class="submit" data-qa="home" data-reactid="node" id="link">Home</a>',
+        '<a class="logo submit" data-reactid="node" data-qa="home" id="link2">Home</a>',
+      );
+
+      expect(result).toEqual({
+        attributes: ['class.submit', 'class.logo', 'data-qa', 'id'],
+        matchingAttributes: ['class.submit', 'data-qa'],
+      });
+    });
+  });
 
   describe('isTagSame', () => {
     it('compares tag names', async () => {

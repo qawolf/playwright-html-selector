@@ -1,11 +1,17 @@
-const serializeElement = (element: HTMLElement): object => {
-  const elementAttributes = element.attributes;
-  const attributes = {};
+export const serializeAttributes = (element: HTMLElement): object => {
+  const attributes = element.attributes;
+  const serialized = {};
 
-  Object.keys(elementAttributes).forEach(key => {
-    const { name, value } = elementAttributes[key];
-    attributes[name] = value;
+  Object.keys(attributes).forEach(key => {
+    const { name, value } = attributes[key];
+    serialized[name] = value;
   });
+
+  return serialized;
+};
+
+const serializeElement = (element: HTMLElement): object => {
+  const attributes = serializeAttributes(element);
 
   return {
     ...attributes,
@@ -26,4 +32,8 @@ export const serializeElementAndDescendants = (
   }
 
   return attributes;
+};
+
+export const unique = (array: any[]): any[] => {
+  return [...new Set(array)];
 };

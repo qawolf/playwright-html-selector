@@ -1,3 +1,10 @@
+import { serializeAttributes, unique } from './utils';
+
+export interface AttributeComparison {
+  attributes: string[];
+  matchingAttributes: string[];
+}
+
 const cleanText = (text = ''): string => {
   const cleaned = text
     // remove newlines
@@ -9,6 +16,45 @@ const cleanText = (text = ''): string => {
   return cleaned;
 };
 
+export const compareAttributes = (
+  a: HTMLElement,
+  b: HTMLElement,
+): AttributeComparison => {
+  const attributesA = serializeAttributes(a);
+  const attributesB = serializeAttributes(b);
+
+  const attributes = [];
+  const matchingAttributes = [];
+
+  unique(Object.keys(attributesA).concat(Object.keys(attributesB))).forEach(
+    key => {
+      // ignore dynamic attributes
+      if (key === 'data-reactid') return;
+
+      if (['class', 'labels'].includes(key)) {
+        const aValues: string[] = (attributesA[key] || '').split(' ');
+        const bValues: string[] = (attributesB[key] || '').split(' ');
+
+        unique(aValues.concat(bValues)).forEach(name => {
+          const matchKey = `${key}.${name}`;
+
+          attributes.push(matchKey);
+          if (aValues.includes(name) && bValues.includes(name)) {
+            matchingAttributes.push(matchKey);
+          }
+        });
+      } else {
+        attributes.push(key);
+        if (attributesA[key] === attributesB[key]) {
+          matchingAttributes.push(key);
+        }
+      }
+    },
+  );
+
+  return { attributes, matchingAttributes };
+};
+
 export const isTagSame = (a: HTMLElement, b: HTMLElement): boolean => {
   return a.tagName.toLowerCase() === b.tagName.toLowerCase();
 };
@@ -16,6 +62,3 @@ export const isTagSame = (a: HTMLElement, b: HTMLElement): boolean => {
 export const isTextSame = (a: HTMLElement, b: HTMLElement): boolean => {
   return cleanText(a.innerText || '') === cleanText(b.innerText || '');
 };
-
-// TODO: account for attributes that do NOT match target
-// what % of attributes are shared?
