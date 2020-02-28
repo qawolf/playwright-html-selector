@@ -6,13 +6,11 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "createDefaultProgram": true,
     "project": "tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "jest"
-  ],
+  "plugins": ["@typescript-eslint", "jest"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",

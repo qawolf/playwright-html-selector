@@ -2,6 +2,12 @@
   "name": "playwright-html-selector",
   "version": "0.1.0",
   "description": "Select an element by it's HTML",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build",
+    "src"
+  ],
   "engines": {
     "node": ">= 12.13"
   },
