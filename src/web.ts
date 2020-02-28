@@ -1,11 +1,11 @@
 import { createEngine } from './engine';
 import { htmlToElement } from './htmlToElement';
-import { getElementAttributes } from './utils';
+import { serializeElementAndDescendants } from './utils';
 
 // This file is the entrypoint for the web code.
 // Export helpers for addHtmlSelectorWeb by decorating the default export.
 /* eslint-disable @typescript-eslint/no-explicit-any */
-(createEngine as any).getElementAttributes = getElementAttributes;
+(createEngine as any).serializeElementAndDescendants = serializeElementAndDescendants;
 (createEngine as any).htmlToElement = htmlToElement;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 

@@ -22,7 +22,9 @@ describe('htmlToElement', () => {
         "<input data-qa='test-input' id='secret' placeholder='Password' type='password' />",
       );
 
-      return (window as any).htmlselector.getElementAttributes(element);
+      return (window as any).htmlselector.serializeElementAndDescendants(
+        element,
+      );
       /* eslint-enable @typescript-eslint/no-explicit-any */
     });
 
@@ -45,7 +47,9 @@ describe('htmlToElement', () => {
         "<div class='container'><label data-test='label'>Password <b>Secret</b></label><input data-qa='test-input' id='secret' placeholder='Password' type='password' /></div>",
       );
 
-      return (window as any).htmlselector.getElementAttributes(element);
+      return (window as any).htmlselector.serializeElementAndDescendants(
+        element,
+      );
       /* eslint-enable @typescript-eslint/no-explicit-any */
     });
 
