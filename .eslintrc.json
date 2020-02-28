@@ -19,5 +19,6 @@
     "prettier",
     "prettier/@typescript-eslint"
   ],
+  "ignorePatterns": ["*.d.ts"],
   "rules": {}
 }
