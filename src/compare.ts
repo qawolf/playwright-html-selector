@@ -1,6 +1,6 @@
 import { serializeAttributes, unique } from './utils';
 
-export interface AttributeComparison {
+export interface ElementComparison {
   attributes: string[];
   matchingAttributes: string[];
 }
@@ -19,7 +19,7 @@ const cleanText = (text = ''): string => {
 export const compareAttributes = (
   a: HTMLElement,
   b: HTMLElement,
-): AttributeComparison => {
+): ElementComparison => {
   const attributesA = serializeAttributes(a);
   const attributesB = serializeAttributes(b);
 
@@ -53,6 +53,23 @@ export const compareAttributes = (
   );
 
   return { attributes, matchingAttributes };
+};
+
+export const compareElements = (
+  a: HTMLElement,
+  b: HTMLElement,
+): ElementComparison => {
+  const comparison = compareAttributes(a, b);
+  comparison.attributes.push('innerText', 'tag');
+
+  if (isTextSame(a, b)) {
+    comparison.matchingAttributes.push('innerText');
+  }
+  if (isTagSame(a, b)) {
+    comparison.matchingAttributes.push('tag');
+  }
+
+  return comparison;
 };
 
 export const isTagSame = (a: HTMLElement, b: HTMLElement): boolean => {

@@ -1,5 +1,5 @@
 import { Browser, chromium, Page } from 'playwright';
-import { AttributeComparison } from '../src/compare';
+import { ElementComparison } from '../src/compare';
 import { addHtmlSelectorWeb } from '../src/register';
 import { HtmlSelectorWeb } from '../src/web';
 import { TestUrl } from './utils';
@@ -8,9 +8,13 @@ let browser: Browser;
 let page: Page;
 
 const buildCompareFunction = (
-  functionName: 'compareAttributes' | 'isTagSame' | 'isTextSame',
-): ((a: string, b: string) => Promise<AttributeComparison | boolean>) => {
-  return (a: string, b: string): Promise<AttributeComparison | boolean> => {
+  functionName:
+    | 'compareAttributes'
+    | 'compareElements'
+    | 'isTagSame'
+    | 'isTextSame',
+): ((a: string, b: string) => Promise<ElementComparison | boolean>) => {
+  return (a: string, b: string): Promise<ElementComparison | boolean> => {
     return page.evaluate(
       (functionName, a, b) => {
         const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
@@ -27,6 +31,7 @@ const buildCompareFunction = (
 };
 
 const compareAttributes = buildCompareFunction('compareAttributes');
+const compareElements = buildCompareFunction('compareElements');
 const isTagSame = buildCompareFunction('isTagSame');
 const isTextSame = buildCompareFunction('isTextSame');
 
@@ -41,7 +46,7 @@ describe('compare', () => {
   afterAll(() => browser.close());
 
   describe('compareAttributes', () => {
-    it('compares attributes', async () => {
+    it('returns all attributes and matching attributes', async () => {
       const result = await compareAttributes(
         '<a data-qa="home" id="link">Home</a>',
         '<a data-qa="home" id="link2">Home</a>',
@@ -78,12 +83,35 @@ describe('compare', () => {
     });
   });
 
+  describe('compareElements', () => {
+    it('returns all attributes and matching attributes including tag and innerText', async () => {
+      const result = await compareElements(
+        '<a class="submit" data-qa="home" id="link">\ngit is great   </a>',
+        '<a class="logo submit" data-reactid="node" data-qa="home" id="link2">git is   great</a>',
+      );
+
+      expect(result).toEqual({
+        attributes: [
+          'class.submit',
+          'class.logo',
+          'data-qa',
+          'id',
+          'innerText',
+          'tag',
+        ],
+        matchingAttributes: ['class.submit', 'data-qa', 'innerText', 'tag'],
+      });
+    });
+  });
+
   describe('isTagSame', () => {
-    it('compares tag names', async () => {
+    it('returns true if tag names the same', async () => {
       expect(
         await isTagSame('<a>git is great</a>', '<a>git is great</a>'),
       ).toBe(true);
+    });
 
+    it('returns false if tag names differ', async () => {
       expect(
         await isTagSame('<p>git is great</p>', '<a>git is great</a>'),
       ).toBe(false);
@@ -93,7 +121,7 @@ describe('compare', () => {
   });
 
   describe('isTextSame', () => {
-    it('compares text', async () => {
+    it('returns true if text same', async () => {
       expect(
         await isTextSame('<a>git is great</a>', '<a>git is great</a>'),
       ).toBe(true);
@@ -101,6 +129,9 @@ describe('compare', () => {
       expect(
         await isTextSame('<a>git is <b>great</b></a>', '<a>git is great</a>'),
       ).toBe(true);
+    });
+
+    it('returns false if text differs', async () => {
       expect(
         await isTextSame(
           '<a>git is <b>great</b></a>',

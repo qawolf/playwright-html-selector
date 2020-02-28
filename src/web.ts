@@ -1,6 +1,7 @@
 import {
-  AttributeComparison,
   compareAttributes,
+  compareElements,
+  ElementComparison,
   isTagSame,
   isTextSame,
 } from './compare';
@@ -9,7 +10,8 @@ import { htmlToElement } from './htmlToElement';
 import { serializeElementAndDescendants } from './utils';
 
 export interface HtmlSelectorWeb {
-  compareAttributes: (a: HTMLElement, b: HTMLElement) => AttributeComparison;
+  compareAttributes: (a: HTMLElement, b: HTMLElement) => ElementComparison;
+  compareElements: (a: HTMLElement, b: HTMLElement) => ElementComparison;
   htmlToElement: (html: string) => HTMLElement;
   isTagSame: (a: HTMLElement, b: HTMLElement) => boolean;
   isTextSame: (a: HTMLElement, b: HTMLElement) => boolean;
@@ -19,6 +21,7 @@ export interface HtmlSelectorWeb {
 // This file is the entrypoint for the web code.
 // Export helpers for addHtmlSelectorWeb by decorating the default export.
 (createEngine as any).compareAttributes = compareAttributes;
+(createEngine as any).compareElements = compareElements;
 (createEngine as any).htmlToElement = htmlToElement;
 (createEngine as any).isTagSame = isTagSame;
 (createEngine as any).isTextSame = isTextSame;
