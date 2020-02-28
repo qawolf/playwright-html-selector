@@ -1,4 +1,4 @@
-const cleanText = (text: string = ''): string => {
+const cleanText = (text = ''): string => {
   const cleaned = text
     // remove newlines
     .replace(/[\r\n\t]+/gm, ' ')
