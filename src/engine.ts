@@ -1,5 +1,3 @@
-import { htmlToElement } from './htmlToElement';
-
 // <a><div>Yo!</div><span>Sup</span></a>
 
 // Selector must not have siblings
@@ -15,23 +13,23 @@ import { htmlToElement } from './htmlToElement';
 
 // comparison.ts
 // { attributes, isTextSame, isTagSame }
-const compareAttributes = () => {};
-const compareTag = () => {};
-const compareText = () => {};
+// const compareAttributes = () => {};
+// const compareTag = () => {};
+// const compareText = () => {};
 
-const compareNodes = (node: Node, otherNode: Node) => {
-  //
-};
+// const compareNodes = (node: Node, otherNode: Node) => {
+//   //
+// };
 
-const compareAncestors = () => {};
+// const compareAncestors = () => {};
 
-const matchNodes = (node: Node, otherNode: Node) => {
-  return {
-    // match info
-    percent: 100,
-    node,
-  };
-};
+// const matchNodes = (node: Node, otherNode: Node) => {
+//   return {
+//     // match info
+//     percent: 100,
+//     node,
+//   };
+// };
 
 export const createEngine = {
   name: 'html',
@@ -48,7 +46,9 @@ export const createEngine = {
   },
 
   queryAll(root: Node, selector: string): null {
-    const selectorElement = htmlToElement(selector);
-    return findMatchingDescendants(root, selectorElement);
+    console.log(root, selector);
+    // const selectorElement = htmlToElement(selector);
+    // return findMatchingDescendants(root, selectorElement);
+    return null;
   },
 };
