@@ -7,7 +7,7 @@ describe('html selector', () => {
   let page: Page;
 
   beforeAll(async () => {
-    register();
+    await register();
 
     browser = await chromium.launch();
     page = await browser.newPage();
