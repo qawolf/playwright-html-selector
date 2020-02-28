@@ -16,6 +16,29 @@ const cleanText = (text = ''): string => {
   return cleaned;
 };
 
+const compareListAttributes = (
+  key: string,
+  a?: string,
+  b?: string,
+): ElementComparison => {
+  const attributes = [];
+  const matchingAttributes = [];
+
+  const aValues: string[] = (a || '').split(' ');
+  const bValues: string[] = (b || '').split(' ');
+
+  unique(aValues.concat(bValues)).forEach(name => {
+    const matchKey = `${key}.${name}`;
+
+    attributes.push(matchKey);
+    if (aValues.includes(name) && bValues.includes(name)) {
+      matchingAttributes.push(matchKey);
+    }
+  });
+
+  return { attributes, matchingAttributes };
+};
+
 export const compareAttributes = (
   a: HTMLElement,
   b: HTMLElement,
@@ -23,8 +46,8 @@ export const compareAttributes = (
   const attributesA = serializeAttributes(a);
   const attributesB = serializeAttributes(b);
 
-  const attributes = [];
-  const matchingAttributes = [];
+  let attributes = [];
+  let matchingAttributes = [];
 
   unique(Object.keys(attributesA).concat(Object.keys(attributesB))).forEach(
     key => {
@@ -32,17 +55,16 @@ export const compareAttributes = (
       if (key === 'data-reactid') return;
 
       if (['class', 'labels'].includes(key)) {
-        const aValues: string[] = (attributesA[key] || '').split(' ');
-        const bValues: string[] = (attributesB[key] || '').split(' ');
+        const listAttributes = compareListAttributes(
+          key,
+          attributesA[key],
+          attributesB[key],
+        );
 
-        unique(aValues.concat(bValues)).forEach(name => {
-          const matchKey = `${key}.${name}`;
-
-          attributes.push(matchKey);
-          if (aValues.includes(name) && bValues.includes(name)) {
-            matchingAttributes.push(matchKey);
-          }
-        });
+        attributes = attributes.concat(listAttributes.attributes);
+        matchingAttributes = matchingAttributes.concat(
+          listAttributes.matchingAttributes,
+        );
       } else {
         attributes.push(key);
         if (attributesA[key] === attributesB[key]) {

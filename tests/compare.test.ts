@@ -121,7 +121,7 @@ describe('compare', () => {
   });
 
   describe('isTextSame', () => {
-    it('returns true if text same', async () => {
+    it('returns true if innerText same', async () => {
       expect(
         await isTextSame('<a>git is great</a>', '<a>git is great</a>'),
       ).toBe(true);
@@ -131,12 +131,9 @@ describe('compare', () => {
       ).toBe(true);
     });
 
-    it('returns false if text differs', async () => {
+    it('returns false if innerText differs', async () => {
       expect(
-        await isTextSame(
-          '<a>git is <b>great</b></a>',
-          '<a>gitter is great</a>',
-        ),
+        await isTextSame('<a>git is great</a>', '<a>gitter is great</a>'),
       ).toBe(false);
     });
 
@@ -146,7 +143,7 @@ describe('compare', () => {
       ).toBe(true);
     });
 
-    it('handles elements without text', async () => {
+    it('handles elements without innerText', async () => {
       expect(await isTextSame('<div />', '<div>abc</div>')).toBe(false);
       expect(await isTextSame('<div />', '<input type="text" />')).toBe(true);
     });
