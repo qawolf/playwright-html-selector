@@ -18,7 +18,6 @@ describe('htmlToElement', () => {
 
   it('it deserializes flat elements', async () => {
     const result = await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
       const element = htmlselector.htmlToElement(
         "<input data-qa='test-input' id='secret' placeholder='Password' type='password' />",
@@ -41,7 +40,6 @@ describe('htmlToElement', () => {
 
   it('it deserializes nested elements', async () => {
     const result = await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
       const element = htmlselector.htmlToElement(
         "<div class='container'><label data-test='label'>Password <b>Secret</b></label><input data-qa='test-input' id='secret' placeholder='Password' type='password' /></div>",
