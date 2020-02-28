@@ -10,7 +10,7 @@ export default {
     name: 'htmlselector',
     strict: false,
   },
-  onwarn: (warning, next) => {
+  onwarn: (warning, next): void => {
     if (warning.code === 'THIS_IS_UNDEFINED') return;
     next(warning);
   },

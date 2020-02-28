@@ -13,11 +13,12 @@ const PLAYWRIGHT_WEB_SCRIPT = WEB_SCRIPT.replace('var htmlselector = ', '')
   .slice(0, -2);
 
 // inject our helpers onto the window for using in tests
-export const addHtmlSelectorWeb = (page: Page) =>
+export const addHtmlSelectorWeb = (page: Page): Promise<[unknown, unknown]> =>
   Promise.all([
     page.evaluate(WEB_SCRIPT),
     page.evaluateOnNewDocument(WEB_SCRIPT),
   ]);
 
 // register the selector engine
-export const register = () => selectors.register(PLAYWRIGHT_WEB_SCRIPT);
+export const register = (): Promise<void> =>
+  selectors.register(PLAYWRIGHT_WEB_SCRIPT);

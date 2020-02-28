@@ -17,11 +17,13 @@ describe('htmlToElement', () => {
 
   it('it deserializes flat elements', async () => {
     const result = await page.evaluate(() => {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       const element = (window as any).htmlselector.htmlToElement(
         "<input data-qa='test-input' id='secret' placeholder='Password' type='password' />",
       );
 
       return (window as any).htmlselector.getElementAttributes(element);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
     });
 
     expect(result).toEqual([
@@ -38,11 +40,13 @@ describe('htmlToElement', () => {
 
   it('it deserializes nested elements', async () => {
     const result = await page.evaluate(() => {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       const element = (window as any).htmlselector.htmlToElement(
         "<div class='container'><label data-test='label'>Password <b>Secret</b></label><input data-qa='test-input' id='secret' placeholder='Password' type='password' /></div>",
       );
 
       return (window as any).htmlselector.getElementAttributes(element);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
     });
 
     expect(result).toEqual([
