@@ -23,11 +23,11 @@ const serializeElement = (element: HTMLElement): object => {
 export const serializeElementAndDescendants = (
   element: HTMLElement,
 ): object[] => {
-  let attributes = [serializeElement(element)];
+  const attributes = [serializeElement(element)];
 
   for (let i = 0; i < element.children.length; i++) {
-    attributes = attributes.concat(
-      serializeElementAndDescendants(element.children[i] as HTMLElement),
+    attributes.push(
+      ...serializeElementAndDescendants(element.children[i] as HTMLElement),
     );
   }
 

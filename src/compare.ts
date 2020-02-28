@@ -46,8 +46,8 @@ export const compareAttributes = (
   const attributesA = serializeAttributes(a);
   const attributesB = serializeAttributes(b);
 
-  let attributes = [];
-  let matchingAttributes = [];
+  const attributes = [];
+  const matchingAttributes = [];
 
   unique(Object.keys(attributesA).concat(Object.keys(attributesB))).forEach(
     key => {
@@ -61,10 +61,8 @@ export const compareAttributes = (
           attributesB[key],
         );
 
-        attributes = attributes.concat(listAttributes.attributes);
-        matchingAttributes = matchingAttributes.concat(
-          listAttributes.matchingAttributes,
-        );
+        attributes.push(...listAttributes.attributes);
+        matchingAttributes.push(...listAttributes.matchingAttributes);
       } else {
         attributes.push(key);
         if (attributesA[key] === attributesB[key]) {
