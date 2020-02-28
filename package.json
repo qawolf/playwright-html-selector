@@ -1,9 +1,9 @@
 {
   "name": "playwright-html-selector",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Select an element by it's HTML",
   "engines": {
-    "node": ">= 12.13 <13"
+    "node": ">= 12.13"
   },
   "scripts": {
     "clean": "rimraf build tmp",
