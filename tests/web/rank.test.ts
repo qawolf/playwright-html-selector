@@ -118,6 +118,44 @@ describe('rank', () => {
   });
 
   describe('sortRankings', () => {
+    it('sorts rankings by score if no strong match keys', () => {
+      const result = sortRankings([
+        {
+          score: 60,
+          strongMatchKeys: [],
+          node: null as any,
+        },
+        {
+          score: 100,
+          strongMatchKeys: [],
+          node: null as any,
+        },
+        {
+          score: 50,
+          strongMatchKeys: [],
+          node: null as any,
+        },
+      ]);
+
+      expect(result).toEqual([
+        {
+          score: 100,
+          strongMatchKeys: [],
+          node: null as any,
+        },
+        {
+          score: 60,
+          strongMatchKeys: [],
+          node: null as any,
+        },
+        {
+          score: 50,
+          strongMatchKeys: [],
+          node: null as any,
+        },
+      ]);
+    });
+
     it('sorts rankings with strong match keys first', () => {
       const result = sortRankings([
         {
