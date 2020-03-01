@@ -5,7 +5,7 @@ type Ranking = Similarity & {
   node: HTMLElement;
 };
 
-interface Similarity {
+export interface Similarity {
   score: number;
   strongMatchKeys: string[];
 }
@@ -28,22 +28,37 @@ export const computePercent = (shared: number, total: number): number => {
   return shared / total;
 };
 
+export const computeStrongMatchKeys = (
+  elementComparison: ElementComparison,
+): string[] => {
+  const strongMatchKeys: string[] = [];
+  const { attributes, labels } = elementComparison;
+
+  attributes.matching.forEach(attribute => {
+    if (STRONG_MATCH_KEYS.includes(attribute)) {
+      strongMatchKeys.push(attribute);
+    }
+  });
+
+  if (labels.matching.length) {
+    // consider shared label a strong match
+    strongMatchKeys.push('label');
+  }
+
+  return strongMatchKeys;
+};
+
 export const computeSimilarity = (
   elementComparison: ElementComparison,
 ): Similarity => {
   let shared = 0;
   let total = 0;
-  const strongMatchKeys: string[] = [];
   const { attributes, classes, labels } = elementComparison;
 
   attributes.all.forEach(attribute => {
     if (attributes.matching.includes(attribute)) {
       shared++;
-      if (STRONG_MATCH_KEYS.includes(attribute)) {
-        strongMatchKeys.push(attribute);
-      }
     }
-
     total++;
   });
 
@@ -52,22 +67,20 @@ export const computeSimilarity = (
     total++;
   }
   if (labels.all.length) {
-    // consider shared label a strong match
-    if (labels.matching.length) strongMatchKeys.push('label');
     shared += computePercent(labels.matching.length, labels.all.length);
     total++;
   }
 
   const score = Math.round(computePercent(shared, total) * 100);
 
-  return { score, strongMatchKeys };
+  return { score, strongMatchKeys: computeStrongMatchKeys(elementComparison) };
 };
 
 const computeElementSimilarity = (
   target: HTMLElement,
   candidate: HTMLElement,
 ): Similarity => {
-  const elementComparison = compareElements(target.target, candidate);
+  const elementComparison = compareElements(target, candidate);
 
   return computeSimilarity(elementComparison);
 };

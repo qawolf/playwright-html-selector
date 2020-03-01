@@ -1,9 +1,11 @@
 import { compareElements, isTagSame, isTextSame } from './compare';
 import { createEngine } from './engine';
 import { htmlToElement } from './htmlToElement';
+import { buildCandidateRanking } from './rank';
 import { serializeElementAndDescendants } from './utils';
 
 const web = {
+  buildCandidateRanking,
   compareElements,
   htmlToElement,
   isTagSame,
