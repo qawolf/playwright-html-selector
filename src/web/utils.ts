@@ -25,7 +25,8 @@ export const serializeAttributes = (element: HTMLElement): AttributeMap => {
   return serialized;
 };
 
-const serializeElement = (element: HTMLElement): AttributeMap => {
+// used in testing
+export const serializeElement = (element: HTMLElement): AttributeMap => {
   const attributes = serializeAttributes(element);
 
   return {

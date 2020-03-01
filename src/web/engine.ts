@@ -1,33 +1,3 @@
-// <a><div>Yo!</div><span>Sup</span></a>
-
-// Selector must not have siblings
-// <a><div><span>Sup</span></div></a>
-
-// Check selector is flat, throw an error otherwise
-// Compare the selector descendant first, then parent and parent
-
-// numChildren
-// isTagMatch
-// isTypeable
-// isSelectable
-
-// comparison.ts
-// { attributes, isTextSame, isTagSame }
-
-// const compareNodes = (node: Node, otherNode: Node) => {
-//   //
-// };
-
-// const compareAncestors = () => {};
-
-// const matchNodes = (node: Node, otherNode: Node) => {
-//   return {
-//     // match info
-//     percent: 100,
-//     node,
-//   };
-// };
-
 export const createEngine = {
   name: 'html',
 
