@@ -2,6 +2,17 @@ export interface AttributeMap {
   [key: string]: string;
 }
 
+export const cleanText = (text = ''): string => {
+  const cleaned = text
+    // remove newlines
+    .replace(/[\r\n\t]+/gm, ' ')
+    // remove excessive whitespace
+    .replace(/\s+/gm, ' ')
+    .trim();
+
+  return cleaned;
+};
+
 export const serializeAttributes = (element: HTMLElement): AttributeMap => {
   const attributes = element.attributes;
   const serialized = {};
@@ -36,8 +47,4 @@ export const serializeElementAndDescendants = (
   }
 
   return attributes;
-};
-
-export const unique = (array: any[]): any[] => {
-  return [...new Set(array)];
 };

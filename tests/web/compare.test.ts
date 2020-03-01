@@ -1,5 +1,9 @@
 import { Browser, chromium, Page } from 'playwright';
-import { ElementComparison } from '../../src/web/compare';
+import {
+  compareAttributes,
+  compareListAttributes,
+  ElementComparison,
+} from '../../src/web/compare';
 import { addHtmlSelectorWeb } from '../../src/register';
 import { HtmlSelectorWeb } from '../../src/web';
 import { TestUrl } from '../utils';
@@ -8,11 +12,7 @@ let browser: Browser;
 let page: Page;
 
 const buildCompareFunction = (
-  functionName:
-    | 'compareAttributes'
-    | 'compareElements'
-    | 'isTagSame'
-    | 'isTextSame',
+  functionName: 'compareElements' | 'isTagSame' | 'isTextSame',
 ): ((a: string, b: string) => Promise<ElementComparison | boolean>) => {
   return (a: string, b: string): Promise<ElementComparison | boolean> => {
     return page.evaluate(
@@ -30,7 +30,6 @@ const buildCompareFunction = (
   };
 };
 
-const compareAttributes = buildCompareFunction('compareAttributes');
 const compareElements = buildCompareFunction('compareElements');
 const isTagSame = buildCompareFunction('isTagSame');
 const isTextSame = buildCompareFunction('isTextSame');
@@ -47,38 +46,43 @@ describe('compare', () => {
 
   describe('compareAttributes', () => {
     it('returns all attributes and matching attributes', async () => {
-      const result = await compareAttributes(
-        '<a data-qa="home" id="link">Home</a>',
-        '<a data-qa="home" id="link2">Home</a>',
+      const result = compareAttributes(
+        {
+          'data-qa': 'home',
+          id: 'link',
+        },
+        {
+          class: 'extra',
+          'data-qa': 'home',
+          id: 'link2',
+        },
       );
 
       expect(result).toEqual({
-        attributes: ['data-qa', 'id'],
-        matchingAttributes: ['data-qa'],
+        all: ['data-qa', 'id'],
+        matching: ['data-qa'],
       });
     });
 
-    it('handles attributes with multiple values', async () => {
-      const result = await compareAttributes(
-        '<a class="submit" data-qa="home" id="link">Home</a>',
-        '<a class="logo submit" data-qa="home" id="link2">Home</a>',
+    it('ignores data-reactid and list attributes', async () => {
+      const result = compareAttributes(
+        {
+          class: 'submit',
+          'data-qa': 'home',
+          'data-reactid': 'node',
+          id: 'link',
+        },
+        {
+          class: 'logo submit',
+          'data-qa': 'home',
+          'data-reactid': 'node',
+          id: 'link2',
+        },
       );
 
       expect(result).toEqual({
-        attributes: ['class.submit', 'class.logo', 'data-qa', 'id'],
-        matchingAttributes: ['class.submit', 'data-qa'],
-      });
-    });
-
-    it('ignores data-reactid', async () => {
-      const result = await compareAttributes(
-        '<a class="submit" data-qa="home" data-reactid="node" id="link">Home</a>',
-        '<a class="logo submit" data-reactid="node" data-qa="home" id="link2">Home</a>',
-      );
-
-      expect(result).toEqual({
-        attributes: ['class.submit', 'class.logo', 'data-qa', 'id'],
-        matchingAttributes: ['class.submit', 'data-qa'],
+        all: ['data-qa', 'id'],
+        matching: ['data-qa'],
       });
     });
   });
@@ -86,21 +90,41 @@ describe('compare', () => {
   describe('compareElements', () => {
     it('returns all attributes and matching attributes including tag and innerText', async () => {
       const result = await compareElements(
-        '<a class="submit" data-qa="home" id="link">\ngit is great   </a>',
-        '<a class="logo submit" data-reactid="node" data-qa="home" id="link2">git is   great</a>',
+        '<a class="submit logo" data-qa="home" id="link">\ngit is great   </a>',
+        '<a class="submit" data-reactid="node" data-qa="home" id="link2">git is   great</a>',
       );
 
       expect(result).toEqual({
-        attributes: [
-          'class.submit',
-          'class.logo',
-          'data-qa',
-          'id',
-          'innerText',
-          'tag',
-        ],
-        matchingAttributes: ['class.submit', 'data-qa', 'innerText', 'tag'],
+        attributes: {
+          all: ['data-qa', 'id', 'innerText', 'tag'],
+          matching: ['data-qa', 'innerText', 'tag'],
+        },
+        classes: {
+          all: ['submit', 'logo'],
+          matching: ['submit'],
+        },
+        labels: {
+          all: [],
+          matching: [],
+        },
       });
+    });
+  });
+
+  describe('compareListAttributes', () => {
+    it('returns all attributes and matching attributes', () => {
+      const result = compareListAttributes('logo submit large', 'large logo');
+
+      expect(result).toEqual({
+        all: ['logo', 'submit', 'large'],
+        matching: ['logo', 'large'],
+      });
+    });
+
+    it('handles undefined arguments', () => {
+      const result = compareListAttributes('');
+
+      expect(result).toEqual({ all: [], matching: [] });
     });
   });
 

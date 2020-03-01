@@ -1,12 +1,9 @@
-import { AttributeMap, serializeAttributes, unique } from './utils';
+import { AttributeMap, cleanText, serializeAttributes } from './utils';
 
-// TODO change to just matches and all
-
+// TODO in future consider including additional and missing attributes on other
 export interface Comparison {
-  additional: string[]; // on other, missing from target
-  different: string[]; // different on target and other
-  matching: string[]; // same on target and other
-  missing: string[]; // on target, missing from other
+  all: string[]; // all attributes on target
+  matching: string[]; // attributes that match between target and other
 }
 
 export interface ElementComparison {
@@ -15,58 +12,37 @@ export interface ElementComparison {
   labels: Comparison;
 }
 
-const cleanText = (text = ''): string => {
-  const cleaned = text
-    // remove newlines
-    .replace(/[\r\n\t]+/gm, ' ')
-    // remove excessive whitespace
-    .replace(/\s+/gm, ' ')
-    .trim();
-
-  return cleaned;
-};
-
-// TODO add tests
 export const compareListAttributes = (
   target?: string,
   other?: string,
 ): Comparison => {
-  const additional = [];
+  const all = [];
   const matching = [];
-  const missing = [];
 
   const targetValues: string[] = (target || '').split(' ');
   const otherValues: string[] = (other || '').split(' ');
 
-  unique(targetValues.concat(otherValues)).forEach(name => {
-    if (targetValues.includes(name) && otherValues.includes(name)) {
-      matching.push(name);
-      return;
+  targetValues.forEach(value => {
+    if (!value) return; // ignore empty string
+
+    if (otherValues.includes(value)) {
+      matching.push(value);
     }
 
-    if (targetValues.includes(name)) {
-      missing.push(name);
-      return;
-    }
-
-    additional.push(name);
+    all.push(value);
   });
 
-  return { additional, different: [], matching, missing };
+  return { all, matching };
 };
 
 export const compareAttributes = (
   targetAttributes: AttributeMap,
   otherAttributes: AttributeMap,
 ): Comparison => {
-  const additional = [];
-  const different = [];
+  const all = [];
   const matching = [];
-  const missing = [];
 
-  unique(
-    Object.keys(targetAttributes).concat(Object.keys(otherAttributes)),
-  ).forEach(key => {
+  Object.keys(targetAttributes).forEach(key => {
     // ignore dynamic attributes
     if (key === 'data-reactid') return;
     // ignore class and labels since list attributes handled separately
@@ -74,41 +50,26 @@ export const compareAttributes = (
 
     if (targetAttributes[key] === otherAttributes[key]) {
       matching.push(key);
-      return;
     }
 
-    if (targetAttributes[key] && otherAttributes[key]) {
-      different.push(key);
-      return;
-    }
-
-    if (targetAttributes[key]) {
-      missing.push(key);
-      return;
-    }
-
-    additional.push(key);
+    all.push(key);
   });
 
-  return { additional, different, matching, missing };
+  return { all, matching };
 };
 
 export const isTagSame = (target: HTMLElement, other: HTMLElement): boolean => {
   return target.tagName.toLowerCase() === other.tagName.toLowerCase();
 };
 
-export const compareText = (
+export const isTextSame = (
   target: HTMLElement,
   other: HTMLElement,
-): keyof Comparison => {
+): boolean => {
   const targetText = cleanText(target.innerText || '');
   const otherText = cleanText(other.innerText || '');
 
-  if (targetText === otherText) return 'matching';
-  if (!otherText) return 'missing';
-  if (!targetText) return 'additional';
-
-  return 'different';
+  return targetText === otherText;
 };
 
 export const compareElements = (
@@ -128,15 +89,14 @@ export const compareElements = (
   );
 
   const attributes = compareAttributes(targetAttributes, otherAttributes);
+  attributes.all.push('innerText', 'tag');
 
+  if (isTextSame(target, other)) {
+    attributes.matching.push('innerText');
+  }
   if (isTagSame(target, other)) {
     attributes.matching.push('tag');
-  } else {
-    attributes.different.push('tag');
   }
-
-  const textComparison = compareText(target, other);
-  attributes[textComparison].push('innerText');
 
   return { attributes, classes, labels };
 };

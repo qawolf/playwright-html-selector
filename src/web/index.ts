@@ -1,20 +1,13 @@
-import {
-  compareAttributes,
-  compareElements,
-  ElementComparison,
-  isTagSame,
-  // isTextSame,
-} from './compare';
+import { compareElements, isTagSame, isTextSame } from './compare';
 import { createEngine } from './engine';
 import { htmlToElement } from './htmlToElement';
 import { serializeElementAndDescendants } from './utils';
 
 const web = {
-  compareAttributes,
   compareElements,
   htmlToElement,
   isTagSame,
-  // isTextSame,
+  isTextSame,
   serializeElementAndDescendants,
 };
 
