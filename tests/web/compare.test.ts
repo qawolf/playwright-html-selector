@@ -1,8 +1,8 @@
 import { Browser, chromium, Page } from 'playwright';
-import { ElementComparison } from '../src/compare';
-import { addHtmlSelectorWeb } from '../src/register';
-import { HtmlSelectorWeb } from '../src/web';
-import { TestUrl } from './utils';
+import { ElementComparison } from '../../src/web/compare';
+import { addHtmlSelectorWeb } from '../../src/register';
+import { HtmlSelectorWeb } from '../../src/web';
+import { TestUrl } from '../utils';
 
 let browser: Browser;
 let page: Page;

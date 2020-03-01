@@ -1,7 +1,7 @@
 import { Browser, chromium, Page } from 'playwright';
-import { addHtmlSelectorWeb } from '../src/register';
-import { HtmlSelectorWeb } from '../src/web';
-import { TestUrl } from './utils';
+import { addHtmlSelectorWeb } from '../../src/register';
+import { HtmlSelectorWeb } from '../../src/web';
+import { TestUrl } from '../utils';
 
 describe('htmlToElement', () => {
   let browser: Browser;

@@ -1,6 +1,6 @@
 import { Browser, chromium, Page } from 'playwright';
-import { register } from '../src/register';
-import { TestUrl } from './utils';
+import { register } from '../../src/register';
+import { TestUrl } from '../utils';
 
 describe('html selector', () => {
   let browser: Browser;

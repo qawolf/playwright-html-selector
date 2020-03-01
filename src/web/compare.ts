@@ -1,5 +1,7 @@
 import { AttributeMap, serializeAttributes, unique } from './utils';
 
+// TODO change to just matches and all
+
 export interface Comparison {
   additional: string[]; // on other, missing from target
   different: string[]; // different on target and other
