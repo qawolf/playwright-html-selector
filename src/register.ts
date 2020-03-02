@@ -1,14 +1,24 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { selectors } from 'playwright-core';
+import { Page, selectors } from 'playwright-core';
 
 export const WEB_SCRIPT = readFileSync(
   join(__dirname, '../build/htmlselector.web.js'),
   'utf8',
-)
-  // make it playwright friendly
-  .replace('var htmlselector = ', '')
+);
+
+// make it playwright friendly
+const PLAYWRIGHT_WEB_SCRIPT = WEB_SCRIPT.replace('var htmlselector = ', '')
   // remove the last semicolon
   .slice(0, -2);
 
-export const register = () => selectors.register(WEB_SCRIPT);
+// inject our helpers onto the window for using in tests
+export const addHtmlSelectorWeb = (page: Page): Promise<[unknown, unknown]> =>
+  Promise.all([
+    page.evaluate(WEB_SCRIPT),
+    page.evaluateOnNewDocument(WEB_SCRIPT),
+  ]);
+
+// register the selector engine
+export const register = (): Promise<void> =>
+  selectors.register(PLAYWRIGHT_WEB_SCRIPT);
