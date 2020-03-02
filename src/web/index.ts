@@ -1,7 +1,13 @@
 import { compareElements, isTagSame, isTextSame } from './compare';
 import { createEngine } from './engine';
 import { htmlToElement } from './htmlToElement';
-import { buildCandidateSelector, flattenTargetElements } from './query';
+import {
+  buildCandidateSelector,
+  findCandidateElements,
+  flattenTargetElements,
+  isVisible,
+  queryHtmlSelectorAll,
+} from './query';
 import { buildCandidateRanking } from './rank';
 import { serializeElement, serializeElementAndDescendants } from './utils';
 
@@ -9,10 +15,13 @@ const web = {
   buildCandidateRanking,
   buildCandidateSelector,
   compareElements,
+  findCandidateElements,
   flattenTargetElements,
   htmlToElement,
   isTagSame,
   isTextSame,
+  isVisible,
+  queryHtmlSelectorAll,
   serializeElement,
   serializeElementAndDescendants,
 };

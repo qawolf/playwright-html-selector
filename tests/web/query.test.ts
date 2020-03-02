@@ -16,6 +16,19 @@ const buildCandidateSelector = (html: string): Promise<string> => {
   }, html);
 };
 
+const findCandidateElements = (html: string): Promise<AttributeMap[]> => {
+  return page.evaluate(html => {
+    const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
+    const target = htmlselector.htmlToElement(html);
+
+    const candidates = htmlselector.findCandidateElements(target);
+
+    return candidates.map(candidate =>
+      htmlselector.serializeElement(candidate),
+    );
+  }, html);
+};
+
 const flattenTargetElements = (
   selector: string,
 ): Promise<{ ancestors: AttributeMap[]; target: AttributeMap }> => {
@@ -31,6 +44,27 @@ const flattenTargetElements = (
       ),
       target: htmlselector.serializeElement(flattened.target),
     };
+  }, selector);
+};
+
+const isVisible = (selector: string): Promise<boolean> => {
+  return page.evaluate(selector => {
+    const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
+    const element = document.querySelector(selector);
+
+    return htmlselector.isVisible(element as HTMLElement);
+  }, selector);
+};
+
+const queryHtmlSelectorAll = (selector: string): Promise<AttributeMap[]> => {
+  return page.evaluate(selector => {
+    const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
+
+    const candidates = htmlselector.queryHtmlSelectorAll(selector);
+
+    return candidates.map(candidate =>
+      htmlselector.serializeElement(candidate),
+    );
   }, selector);
 };
 
@@ -52,7 +86,7 @@ describe('query', () => {
 
     it('returns click input selector for clickable inputs', async () => {
       const expected =
-        'button,input[type="checkbox],input[type="radio"],input[type="submit"]';
+        'button,input[type="checkbox"],input[type="radio"],input[type="submit"]';
 
       const result = await buildCandidateSelector('<input type="radio" />');
       expect(result).toBe(expected);
@@ -90,6 +124,34 @@ describe('query', () => {
 
       const result2 = await buildCandidateSelector('<a href="#" />');
       expect(result2).toBe(expected);
+    });
+  });
+
+  describe('findCandidateElements', () => {
+    it('returns candidate elements', async () => {
+      const result = await findCandidateElements('<button>Submit</button>');
+
+      expect(result).toEqual([
+        { tagName: 'input', textContent: '', type: 'submit', value: 'Other' },
+        {
+          'data-qa': 'button',
+          id: 'button',
+          tagName: 'button',
+          textContent: 'Button',
+        },
+        {
+          class: 'button',
+          id: 'second',
+          tagName: 'button',
+          textContent: 'Second Button',
+        },
+        {
+          class: 'button',
+          id: 'third',
+          tagName: 'button',
+          textContent: 'Second Button',
+        },
+      ]);
     });
   });
 
@@ -133,6 +195,41 @@ describe('query', () => {
       const testFn = () => flattenTargetElements('.container');
 
       expect(testFn()).rejects.toThrowError();
+    });
+  });
+
+  describe('isVisible', () => {
+    it('returns true for visible element', async () => {
+      const result = await isVisible('#button');
+      expect(result).toBe(true);
+    });
+
+    it('returns false for not visible element', async () => {
+      const result = await isVisible('#hidden');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('queryHtmlSelectorAll', () => {
+    it('returns ranked list of candidate elements', async () => {
+      const result = await queryHtmlSelectorAll(
+        '<button class="button" id="second">Second Button</button>',
+      );
+
+      expect(result).toEqual([
+        {
+          class: 'button',
+          id: 'second',
+          tagName: 'button',
+          textContent: 'Second Button',
+        },
+        {
+          class: 'button',
+          id: 'third',
+          tagName: 'button',
+          textContent: 'Second Button',
+        },
+      ]);
     });
   });
 });

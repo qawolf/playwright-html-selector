@@ -1,5 +1,5 @@
-// import { htmlToElement } from './htmlToElement';
-// import { rankCandidateElements } from './rank';
+import { htmlToElement } from './htmlToElement';
+import { rankCandidateElements } from './rank';
 
 export interface TargetElements {
   target: HTMLElement;
@@ -17,9 +17,9 @@ export const buildCandidateSelector = (element: HTMLElement): string => {
       (element as HTMLInputElement).type,
     );
   if (tagName === 'button' || isClickableInput) {
-    return 'button,input[type="checkbox],input[type="radio"],input[type="submit"]';
+    return 'button,input[type="checkbox"],input[type="radio"],input[type="submit"]';
   }
-  // query for typeable inputs
+
   if (
     ['input', 'textarea'].includes(tagName) ||
     element.contentEditable === 'true'
@@ -30,13 +30,15 @@ export const buildCandidateSelector = (element: HTMLElement): string => {
   return '*';
 };
 
-// const findCandidateElements = (target: HTMLElement): HTMLElement[] => {
-//   const selector = buildCssSelector(target);
+export const findCandidateElements = (target: HTMLElement): HTMLElement[] => {
+  const selector = buildCandidateSelector(target);
 
-// TODO filter out non visible candidates
+  const candidates = Array.from(
+    document.querySelectorAll(selector),
+  ) as HTMLElement[];
 
-//   return Array.from(document.querySelectorAll(selector));
-// };
+  return candidates.filter(candidate => isVisible(candidate));
+};
 
 export const flattenTargetElements = (element: HTMLElement): TargetElements => {
   let target: HTMLElement = element;
@@ -58,12 +60,20 @@ export const flattenTargetElements = (element: HTMLElement): TargetElements => {
   return { ancestors, target };
 };
 
-// export const querySelectorAll = (html: string): HTMLElement[] => {
-//   const element = htmlToElement(html);
-//   const targetElements = flattenTargetElements(element);
+export const isVisible = (element: HTMLElement): boolean => {
+  if (element.offsetWidth <= 0 || element.offsetHeight <= 0) {
+    return false;
+  }
 
-//   const candidates = findCandidateElements(targetElements.target);
-//   const rankings = rankCandidateElements(targetElements, candidates);
+  return true;
+};
 
-//   return rankings.map(ranking => ranking.node);
-// };
+export const queryHtmlSelectorAll = (html: string): HTMLElement[] => {
+  const element = htmlToElement(html);
+  const targetElements = flattenTargetElements(element);
+
+  const candidates = findCandidateElements(targetElements.target);
+  const rankings = rankCandidateElements(targetElements, candidates);
+
+  return rankings.map(ranking => ranking.node);
+};

@@ -7,16 +7,26 @@
   .container > button {
     margin-top: 20px;
   }
+
+  #hidden {
+    display: none;
+  }
 </style>
 
 <body>
   <div class="container">
     <a href="https://google.com">Go to google</a>
 
+    <input type="submit" value="Other" />
+
     <div id="main">
       <div class="container">
         <button data-qa="button" id="button">Button</button>
       </div>
     </div>
+
+    <button class="button" id="second">Second Button</button>
+    <button class="button" id="third">Second Button</button>
+    <button id="hidden">Hidden</button>
   </div>
 </body>
