@@ -20,7 +20,7 @@ const STRONG_MATCH_KEYS = [
   'title',
 ];
 
-const THRESHOLD = 75;
+const THRESHOLD = 0.75;
 
 export const computePercent = (shared: number, total: number): number => {
   if (!total) return 0;
@@ -137,6 +137,7 @@ export const rankCandidateElements = (
   const sorted = sortRankings(rankings);
 
   return sorted.filter(
-    ranking => ranking.strongMatchKeys.length || ranking.score >= THRESHOLD,
+    ranking =>
+      ranking.strongMatchKeys.length || ranking.score / 100 >= THRESHOLD,
   );
 };
