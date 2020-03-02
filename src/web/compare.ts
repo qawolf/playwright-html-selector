@@ -63,11 +63,13 @@ export const isTagSame = (target: HTMLElement, other: HTMLElement): boolean => {
   return target.tagName.toLowerCase() === other.tagName.toLowerCase();
 };
 
-// TODO: do not return true if both have no text
 export const isTextSame = (
   target: HTMLElement,
   other: HTMLElement,
-): boolean => {
+): boolean | null => {
+  // if target does not have text, return null so text not included in comparison
+  if (!target.getAttribute('qaw_innertext')) return null;
+
   const targetText = cleanText(target.getAttribute('qaw_innertext') || '');
   const otherText = cleanText(other.innerText || '');
 
@@ -91,11 +93,16 @@ export const compareElements = (
   );
 
   const attributes = compareAttributes(targetAttributes, otherAttributes);
-  attributes.all.push('innerText', 'tag');
 
-  if (isTextSame(target, other)) {
+  const sameText = isTextSame(target, other);
+  if (sameText !== null) {
+    attributes.all.push('innerText');
+  }
+  if (sameText) {
     attributes.matching.push('innerText');
   }
+
+  attributes.all.push('tag');
   if (isTagSame(target, other)) {
     attributes.matching.push('tag');
   }

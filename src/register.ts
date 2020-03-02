@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { selectors, Page } from 'playwright-core';
+import { Page, selectors } from 'playwright-core';
 
 export const WEB_SCRIPT = readFileSync(
   join(__dirname, '../build/htmlselector.web.js'),

@@ -111,6 +111,28 @@ describe('compare', () => {
         },
       });
     });
+
+    it('does not include innerText in attributes if target does not have text', async () => {
+      const result = await compareElements(
+        '<input title="password" type="password" qaw_labels="Password Secret" />',
+        '<input title="password" type="text"  />',
+      );
+
+      expect(result).toEqual({
+        attributes: {
+          all: ['title', 'type', 'tag'],
+          matching: ['title', 'tag'],
+        },
+        classes: {
+          all: [],
+          matching: [],
+        },
+        labels: {
+          all: ['Password', 'Secret'],
+          matching: [],
+        },
+      });
+    });
   });
 
   describe('compareListAttributes', () => {
@@ -181,9 +203,9 @@ describe('compare', () => {
       ).toBe(true);
     });
 
-    it('handles elements without innerText', async () => {
-      expect(await isTextSame('<div />', '<div>abc</div>')).toBe(false);
-      expect(await isTextSame('<div />', '<input type="text" />')).toBe(true);
+    it('returns null if target does not have text', async () => {
+      expect(await isTextSame('<div />', '<div>abc</div>')).toBeNull();
+      expect(await isTextSame('<div />', '<input type="text" />')).toBeNull();
     });
   });
 });

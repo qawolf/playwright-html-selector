@@ -48,8 +48,8 @@ export const serializeElement = (element: HTMLElement): AttributeMap => {
 
   return {
     ...attributes,
+    innerText: element.innerText,
     tagName: element.tagName.toLowerCase(),
-    textContent: element.innerText,
   };
 };
 

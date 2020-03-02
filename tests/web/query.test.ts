@@ -132,30 +132,30 @@ describe('query', () => {
       const result = await findCandidateElements('<button>Submit</button>');
 
       expect(result).toEqual([
-        { tagName: 'input', textContent: '', type: 'submit', value: 'Other' },
+        { innerText: '', tagName: 'input', type: 'submit', value: 'Other' },
         {
           'data-qa': 'button',
           id: 'button',
+          innerText: 'Button',
           tagName: 'button',
-          textContent: 'Button',
         },
         {
           class: 'button',
           id: 'second',
+          innerText: 'Second Button',
           tagName: 'button',
-          textContent: 'Second Button',
         },
         {
           class: 'button',
           id: 'third',
+          innerText: 'Second Button',
           tagName: 'button',
-          textContent: 'Second Button',
         },
         {
           id: 'checkbox',
+          innerText: '',
           labels: 'Check me!',
           tagName: 'input',
-          textContent: '',
           type: 'checkbox',
         },
       ]);
@@ -171,8 +171,8 @@ describe('query', () => {
         target: {
           'data-qa': 'button',
           id: 'button',
+          innerText: 'Button',
           tagName: 'button',
-          textContent: 'Button',
         },
       });
     });
@@ -184,16 +184,16 @@ describe('query', () => {
         ancestors: [
           {
             class: 'container',
+            innerText: 'Button',
             tagName: 'div',
-            textContent: 'Button',
           },
-          { id: 'main', tagName: 'div', textContent: 'Button' },
+          { id: 'main', innerText: 'Button', tagName: 'div' },
         ],
         target: {
           'data-qa': 'button',
           id: 'button',
+          innerText: 'Button',
           tagName: 'button',
-          textContent: 'Button',
         },
       });
     });
@@ -230,14 +230,14 @@ describe('query', () => {
         {
           class: 'button',
           id: 'second',
+          innerText: 'Second Button',
           tagName: 'button',
-          textContent: 'Second Button',
         },
         {
           class: 'button',
           id: 'third',
+          innerText: 'Second Button',
           tagName: 'button',
-          textContent: 'Second Button',
         },
       ]);
     });

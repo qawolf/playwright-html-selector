@@ -30,10 +30,10 @@ describe('htmlToElement', () => {
       {
         'data-qa': 'test-input',
         id: 'secret',
+        innerText: '',
         placeholder: 'Password',
         type: 'password',
         tagName: 'input',
-        textContent: '',
       },
     ]);
   });
@@ -51,25 +51,25 @@ describe('htmlToElement', () => {
     expect(result).toEqual([
       {
         class: 'container',
+        innerText: 'Password Secret',
         tagName: 'div',
-        textContent: 'Password Secret',
       },
       {
         'data-test': 'label',
+        innerText: 'Password Secret',
         tagName: 'label',
-        textContent: 'Password Secret',
       },
       {
+        innerText: 'Secret',
         tagName: 'b',
-        textContent: 'Secret',
       },
       {
         'data-qa': 'test-input',
         id: 'secret',
+        innerText: '',
         placeholder: 'Password',
         type: 'password',
         tagName: 'input',
-        textContent: '',
       },
     ]);
   });

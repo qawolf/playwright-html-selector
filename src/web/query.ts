@@ -65,7 +65,7 @@ export const flattenTargetElements = (element: HTMLElement): TargetElements => {
     ancestors.push(target);
     target = target.children[0] as HTMLElement;
   }
-  // list closest ancestors to target first
+  // order the ancestors by ascending distance to the target
   ancestors.reverse();
 
   return { ancestors, target };
@@ -73,10 +73,10 @@ export const flattenTargetElements = (element: HTMLElement): TargetElements => {
 
 export const queryHtmlSelectorAll = (
   root: Document | Element,
-  html: string,
+  selectorHtml: string,
 ): HTMLElement[] => {
-  const element = htmlToElement(html);
-  const targetElements = flattenTargetElements(element);
+  const selectorElement = htmlToElement(selectorHtml);
+  const targetElements = flattenTargetElements(selectorElement);
 
   const candidates = findCandidateElements(root, targetElements.target);
   const rankings = rankCandidateElements(targetElements, candidates);

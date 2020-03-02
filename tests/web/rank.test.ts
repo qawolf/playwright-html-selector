@@ -5,6 +5,7 @@ import {
   computePercent,
   computeStrongMatchKeys,
   computeSimilarity,
+  Ranking,
   sortRankings,
 } from '../../src/web/rank';
 import { TestUrl } from '../utils';
@@ -14,17 +15,10 @@ describe('rank', () => {
     let browser: Browser;
     let page: Page;
 
-    beforeAll(async () => {
-      browser = await chromium.launch();
-      page = await browser.newPage();
-      await addHtmlSelectorWeb(page);
-      await page.goto(`${TestUrl}click.html`);
-    });
-
-    afterAll(() => browser.close());
-
-    it('returns similarity ranking between target and candidate', async () => {
-      const result = await page.evaluate(() => {
+    const buildCandidateRanking = (
+      candidateSelector: string,
+    ): Promise<Ranking> => {
+      return page.evaluate(candidateSelector => {
         const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
         const target = {
           ancestors: [
@@ -36,14 +30,38 @@ describe('rank', () => {
             '<button id="button" qaw_innertext="Button" title="submit">Button</button>',
           ),
         };
-        const candidate = document.getElementById('button');
+        const candidate = document.querySelector(
+          candidateSelector,
+        ) as HTMLElement;
 
         return htmlselector.buildCandidateRanking(target, candidate);
-      });
+      }, candidateSelector);
+    };
+
+    beforeAll(async () => {
+      browser = await chromium.launch();
+      page = await browser.newPage();
+      await addHtmlSelectorWeb(page);
+      await page.goto(`${TestUrl}click.html`);
+    });
+
+    afterAll(() => browser.close());
+
+    it('returns similarity ranking between target and candidate', async () => {
+      const result = await buildCandidateRanking('#button');
 
       expect(result).toMatchObject({
         score: 76,
         strongMatchKeys: ['id', 'innerText'],
+      });
+    });
+
+    it('handles the candidate having fewer ancestors than the target', async () => {
+      const result = await buildCandidateRanking('html');
+
+      expect(result).toMatchObject({
+        score: 0,
+        strongMatchKeys: [],
       });
     });
   });

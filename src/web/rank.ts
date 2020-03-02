@@ -1,7 +1,7 @@
 import { compareElements, ElementComparison } from './compare';
 import { TargetElements } from './query';
 
-type Ranking = Similarity & {
+export type Ranking = Similarity & {
   node: HTMLElement;
 };
 
@@ -136,6 +136,8 @@ export const rankCandidateElements = (
   });
   const sorted = sortRankings(rankings);
 
-  // TODO: check whether to include strong match keys regardless
-  return sorted.filter(ranking => ranking.score / 100 >= THRESHOLD);
+  return sorted.filter(
+    ranking =>
+      ranking.strongMatchKeys.length || ranking.score / 100 >= THRESHOLD,
+  );
 };
