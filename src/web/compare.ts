@@ -43,8 +43,8 @@ export const compareAttributes = (
   const matching = [];
 
   Object.keys(targetAttributes).forEach(key => {
-    // ignore dynamic attributes
-    if (key === 'data-reactid') return;
+    // ignore qawolf attributes and dynamic attributes
+    if (key === 'qaw_innertext' || key === 'data-reactid') return;
     // ignore class and labels since list attributes handled separately
     if (['class', 'labels'].includes(key)) return;
 
@@ -66,7 +66,7 @@ export const isTextSame = (
   target: HTMLElement,
   other: HTMLElement,
 ): boolean => {
-  const targetText = cleanText(target.innerText || '');
+  const targetText = cleanText(target.getAttribute('qaw_innertext') || '');
   const otherText = cleanText(other.innerText || '');
 
   return targetText === otherText;

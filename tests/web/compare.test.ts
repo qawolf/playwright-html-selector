@@ -64,13 +64,14 @@ describe('compare', () => {
       });
     });
 
-    it('ignores data-reactid and list attributes', async () => {
+    it('ignores data-reactid, qawolf, and list attributes', async () => {
       const result = compareAttributes(
         {
           class: 'submit',
           'data-qa': 'home',
           'data-reactid': 'node',
           id: 'link',
+          qaw_innertext: 'Text',
         },
         {
           class: 'logo submit',
@@ -90,7 +91,7 @@ describe('compare', () => {
   describe('compareElements', () => {
     it('returns all attributes and matching attributes including tag and innerText', async () => {
       const result = await compareElements(
-        '<a class="submit logo" data-qa="home" id="link">\ngit is great   </a>',
+        '<a class="submit logo" data-qa="home" id="link" qaw_innertext="\ngit is great">\ngit is great   </a>',
         '<a class="submit" data-reactid="node" data-qa="home" id="link2">git is   great</a>',
       );
 
@@ -147,23 +148,35 @@ describe('compare', () => {
   describe('isTextSame', () => {
     it('returns true if innerText same', async () => {
       expect(
-        await isTextSame('<a>git is great</a>', '<a>git is great</a>'),
+        await isTextSame(
+          '<a qaw_innertext="git is great">git is great</a>',
+          '<a>git is great</a>',
+        ),
       ).toBe(true);
 
       expect(
-        await isTextSame('<a>git is <b>great</b></a>', '<a>git is great</a>'),
+        await isTextSame(
+          '<a qaw_innertext="git is great">git is <b>great</b></a>',
+          '<a>git is great</a>',
+        ),
       ).toBe(true);
     });
 
     it('returns false if innerText differs', async () => {
       expect(
-        await isTextSame('<a>git is great</a>', '<a>gitter is great</a>'),
+        await isTextSame(
+          '<a qaw_innertext="git is great">git is great</a>',
+          '<a>gitter is great</a>',
+        ),
       ).toBe(false);
     });
 
     it('ignores newlines, whitespace, extra spaces', async () => {
       expect(
-        await isTextSame('<a>\ngit is great   </a>', '<a>git is   great</a>'),
+        await isTextSame(
+          '<a qaw_innertext="\ngit is great   ">\ngit is great   </a>',
+          '<a>git is   great</a>',
+        ),
       ).toBe(true);
     });
 
