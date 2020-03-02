@@ -21,7 +21,7 @@ const findCandidateElements = (html: string): Promise<AttributeMap[]> => {
     const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
     const target = htmlselector.htmlToElement(html);
 
-    const candidates = htmlselector.findCandidateElements(target);
+    const candidates = htmlselector.findCandidateElements(document, target);
 
     return candidates.map(candidate =>
       htmlselector.serializeElement(candidate),
@@ -60,7 +60,7 @@ const queryHtmlSelectorAll = (selector: string): Promise<AttributeMap[]> => {
   return page.evaluate(selector => {
     const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
 
-    const candidates = htmlselector.queryHtmlSelectorAll(selector);
+    const candidates = htmlselector.queryHtmlSelectorAll(document, selector);
 
     return candidates.map(candidate =>
       htmlselector.serializeElement(candidate),

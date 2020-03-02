@@ -30,11 +30,14 @@ export const buildCandidateSelector = (element: HTMLElement): string => {
   return '*';
 };
 
-export const findCandidateElements = (target: HTMLElement): HTMLElement[] => {
+export const findCandidateElements = (
+  root: Document | Element,
+  target: HTMLElement,
+): HTMLElement[] => {
   const selector = buildCandidateSelector(target);
 
   const candidates = Array.from(
-    document.querySelectorAll(selector),
+    root.querySelectorAll(selector),
   ) as HTMLElement[];
 
   return candidates.filter(candidate => isVisible(candidate));
@@ -68,11 +71,14 @@ export const isVisible = (element: HTMLElement): boolean => {
   return true;
 };
 
-export const queryHtmlSelectorAll = (html: string): HTMLElement[] => {
+export const queryHtmlSelectorAll = (
+  root: Document | Element,
+  html: string,
+): HTMLElement[] => {
   const element = htmlToElement(html);
   const targetElements = flattenTargetElements(element);
 
-  const candidates = findCandidateElements(targetElements.target);
+  const candidates = findCandidateElements(root, targetElements.target);
   const rankings = rankCandidateElements(targetElements, candidates);
 
   return rankings.map(ranking => ranking.node);

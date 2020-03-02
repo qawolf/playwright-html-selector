@@ -8,14 +8,14 @@ export const createEngine = {
     return undefined;
   },
 
-  query(root: Node, selector: string): HTMLElement | null {
-    const elements = queryHtmlSelectorAll(selector);
+  query(root: Document | Element, selector: string): HTMLElement | null {
+    const elements = queryHtmlSelectorAll(root, selector);
 
     return elements[0] || null;
   },
 
-  queryAll(root: Node, selector: string): HTMLElement[] | null {
-    const elements = queryHtmlSelectorAll(selector);
+  queryAll(root: Document | Element, selector: string): HTMLElement[] | null {
+    const elements = queryHtmlSelectorAll(root, selector);
 
     return elements.length ? elements : null;
   },
