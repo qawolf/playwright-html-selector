@@ -29,11 +29,11 @@ describe('rank', () => {
         const target = {
           ancestors: [
             htmlselector.htmlToElement(
-              '<div class="container main buttons">Button</div>',
+              '<div class="container main buttons" qaw_innertext="Button">Button</div>',
             ),
           ],
           target: htmlselector.htmlToElement(
-            '<button id="button" title="submit">Button</button>',
+            '<button id="button" qaw_innertext="Button" title="submit">Button</button>',
           ),
         };
         const candidate = document.getElementById('button');

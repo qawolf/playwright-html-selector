@@ -9,7 +9,11 @@ import {
   queryHtmlSelectorAll,
 } from './query';
 import { buildCandidateRanking } from './rank';
-import { serializeElement, serializeElementAndDescendants } from './utils';
+import {
+  serializeAttributes,
+  serializeElement,
+  serializeElementAndDescendants,
+} from './utils';
 
 const web = {
   buildCandidateRanking,
@@ -22,6 +26,7 @@ const web = {
   isTextSame,
   isVisible,
   queryHtmlSelectorAll,
+  serializeAttributes,
   serializeElement,
   serializeElementAndDescendants,
 };

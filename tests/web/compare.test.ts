@@ -71,7 +71,8 @@ describe('compare', () => {
           'data-qa': 'home',
           'data-reactid': 'node',
           id: 'link',
-          qaw_innertext: 'Text',
+          qaw_innertext: 'Text', // eslint-disable-line @typescript-eslint/camelcase
+          qaw_labels: 'Label', // eslint-disable-line @typescript-eslint/camelcase
         },
         {
           class: 'logo submit',

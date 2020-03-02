@@ -151,6 +151,13 @@ describe('query', () => {
           tagName: 'button',
           textContent: 'Second Button',
         },
+        {
+          id: 'checkbox',
+          labels: 'Check me!',
+          tagName: 'input',
+          textContent: '',
+          type: 'checkbox',
+        },
       ]);
     });
   });
@@ -216,7 +223,7 @@ describe('query', () => {
   describe('queryHtmlSelectorAll', () => {
     it('returns ranked list of candidate elements', async () => {
       const result = await queryHtmlSelectorAll(
-        '<button class="button" id="second">Second Button</button>',
+        '<button class="button" id="second" qaw_innertext="Second Button">Second Button</button>',
       );
 
       expect(result).toEqual([

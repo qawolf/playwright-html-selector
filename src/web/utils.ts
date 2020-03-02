@@ -13,6 +13,16 @@ export const cleanText = (text = ''): string => {
   return cleaned;
 };
 
+export const cleanLabels = (labels: NodeListOf<HTMLLabelElement>): string => {
+  const labelText: string[] = [];
+
+  labels.forEach((label: HTMLLabelElement) => {
+    if (label.innerText.length) labelText.push(cleanText(label.innerText));
+  });
+
+  return labelText.length ? labelText.join(' ') : '';
+};
+
 export const serializeAttributes = (element: HTMLElement): AttributeMap => {
   const attributes = element.attributes;
   const serialized = {};
@@ -21,6 +31,13 @@ export const serializeAttributes = (element: HTMLElement): AttributeMap => {
     const { name, value } = attributes[key];
     serialized[name] = value;
   });
+
+  const elementWithLabels = element as HTMLInputElement;
+
+  if (elementWithLabels.labels && elementWithLabels.labels.length) {
+    const labelText = cleanLabels(elementWithLabels.labels);
+    serialized['labels'] = labelText;
+  }
 
   return serialized;
 };
