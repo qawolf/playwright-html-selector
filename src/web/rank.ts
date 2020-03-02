@@ -136,5 +136,6 @@ export const rankCandidateElements = (
   });
   const sorted = sortRankings(rankings);
 
+  // TODO: check whether to include strong match keys regardless
   return sorted.filter(ranking => ranking.score / 100 >= THRESHOLD);
 };
