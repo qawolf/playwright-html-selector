@@ -7,11 +7,7 @@ export interface TargetElements {
 }
 
 export const isVisible = (element: HTMLElement): boolean => {
-  if (element.offsetWidth <= 0 || element.offsetHeight <= 0) {
-    return false;
-  }
-
-  return true;
+  return element.offsetWidth > 0 && element.offsetHeight > 0;
 };
 
 export const buildCandidateSelector = (element: HTMLElement): string => {
