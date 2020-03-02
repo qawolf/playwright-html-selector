@@ -135,20 +135,6 @@ export const rankCandidateElements = (
     return buildCandidateRanking(target, candidate);
   });
   const sorted = sortRankings(rankings);
-  console.log('SORTED', sorted);
 
-  const filtered = sorted.filter(ranking => {
-    console.log('SCORE', ranking.score / 100 >= THRESHOLD, ranking.score / 100);
-
-    return ranking.strongMatchKeys.length || ranking.score / 100 >= THRESHOLD;
-  });
-
-  console.log('FILTERED', filtered);
-
-  return filtered;
-
-  // return sorted.filter(
-  //   ranking =>
-  //     ranking.strongMatchKeys.length || ranking.score / 100 >= THRESHOLD,
-  // );
+  return sorted.filter(ranking => ranking.score / 100 >= THRESHOLD);
 };
