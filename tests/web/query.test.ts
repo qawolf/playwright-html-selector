@@ -191,10 +191,13 @@ describe('query', () => {
       });
     });
 
-    it('throws an error if targeting element with siblings', () => {
-      const testFn = () => flattenTargetElements('.container');
+    it('throws an error if targeting element with siblings', async () => {
+      const testFn: () => Promise<{
+        ancestors: AttributeMap[];
+        target: AttributeMap;
+      }> = () => flattenTargetElements('.container');
 
-      expect(testFn()).rejects.toThrowError();
+      await expect(testFn()).rejects.toThrowError();
     });
   });
 

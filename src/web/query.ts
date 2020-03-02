@@ -6,6 +6,14 @@ export interface TargetElements {
   ancestors: HTMLElement[];
 }
 
+export const isVisible = (element: HTMLElement): boolean => {
+  if (element.offsetWidth <= 0 || element.offsetHeight <= 0) {
+    return false;
+  }
+
+  return true;
+};
+
 export const buildCandidateSelector = (element: HTMLElement): string => {
   const tagName = element.tagName.toLowerCase();
 
@@ -61,14 +69,6 @@ export const flattenTargetElements = (element: HTMLElement): TargetElements => {
   ancestors.reverse();
 
   return { ancestors, target };
-};
-
-export const isVisible = (element: HTMLElement): boolean => {
-  if (element.offsetWidth <= 0 || element.offsetHeight <= 0) {
-    return false;
-  }
-
-  return true;
 };
 
 export const queryHtmlSelectorAll = (
