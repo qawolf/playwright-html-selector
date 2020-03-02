@@ -1,3 +1,5 @@
+import { queryHtmlSelectorAll } from './query';
+
 export const createEngine = {
   name: 'html',
 
@@ -6,16 +8,15 @@ export const createEngine = {
     return undefined;
   },
 
-  query(root: Node, selector: string): null {
-    console.log(root, selector);
-    return null;
-    // return root.querySelector(selector);
+  query(root: Node, selector: string): HTMLElement | null {
+    const elements = queryHtmlSelectorAll(selector);
+
+    return elements[0] || null;
   },
 
-  queryAll(root: Node, selector: string): null {
-    console.log(root, selector);
-    // const selectorElement = htmlToElement(selector);
-    // return findMatchingDescendants(root, selectorElement);
-    return null;
+  queryAll(root: Node, selector: string): HTMLElement[] | null {
+    const elements = queryHtmlSelectorAll(selector);
+
+    return elements.length ? elements : null;
   },
 };
