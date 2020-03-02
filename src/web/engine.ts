@@ -3,9 +3,9 @@ import { queryHtmlSelectorAll } from './query';
 export const createEngine = {
   name: 'html',
 
-  create(): undefined {
+  create(): null {
     // unclear how to invoke this so we will not implement it yet
-    return undefined;
+    return null;
   },
 
   query(root: Document | Element, selector: string): HTMLElement | null {
@@ -14,9 +14,7 @@ export const createEngine = {
     return elements[0] || null;
   },
 
-  queryAll(root: Document | Element, selector: string): HTMLElement[] | null {
-    const elements = queryHtmlSelectorAll(root, selector);
-
-    return elements.length ? elements : null;
+  queryAll(root: Document | Element, selector: string): HTMLElement[] {
+    return queryHtmlSelectorAll(root, selector);
   },
 };
