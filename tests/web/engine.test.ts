@@ -1,4 +1,5 @@
-import { Browser, chromium, Page } from 'playwright';
+import { Browser, Page } from 'playwright';
+import { launch } from 'playwright-utils';
 import { register } from '../../src/register';
 import { TestUrl } from '../utils';
 
@@ -9,7 +10,7 @@ describe('html selector', () => {
   beforeAll(async () => {
     await register();
 
-    browser = await chromium.launch();
+    browser = await launch();
     page = await browser.newPage();
     await page.goto(`${TestUrl}click.html`);
   });

@@ -1,4 +1,5 @@
-import { Browser, chromium, Page } from 'playwright';
+import { Browser, Page } from 'playwright';
+import { getLaunchOptions, launch } from 'playwright-utils';
 import { addHtmlSelectorWeb } from '../../src/register';
 import { HtmlSelectorWeb } from '../../src/web';
 import { TestUrl } from '../utils';
@@ -70,7 +71,7 @@ const queryHtmlSelectorAll = (selector: string): Promise<AttributeMap[]> => {
 
 describe('query', () => {
   beforeAll(async () => {
-    browser = await chromium.launch();
+    browser = await launch();
     page = await browser.newPage();
     await addHtmlSelectorWeb(page);
     await page.goto(`${TestUrl}click.html`);
@@ -180,6 +181,10 @@ describe('query', () => {
     it('returns target element and its ancestors', async () => {
       const result = await flattenTargetElements('#main');
 
+      // 🤷 silly webkit
+      const innerText =
+        getLaunchOptions().browserName === 'webkit' ? 'Button\n' : 'Button';
+
       expect(result).toEqual({
         ancestors: [
           {
@@ -187,7 +192,7 @@ describe('query', () => {
             innerText: 'Button',
             tagName: 'div',
           },
-          { id: 'main', innerText: 'Button', tagName: 'div' },
+          { id: 'main', innerText, tagName: 'div' },
         ],
         target: {
           'data-qa': 'button',
