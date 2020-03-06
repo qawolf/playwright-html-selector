@@ -13,19 +13,21 @@
   },
   "scripts": {
     "clean": "rimraf build tmp",
-    "build": "concurrently \"npm run build:tsc\" \"npm run build:web\"",
+    "build": "npm run clean && concurrently \"npm run build:tsc\" \"npm run build:web\"",
     "build:tsc": "tsc -p tsconfig.release.json",
     "build:web": "rollup --config src/rollup.ts",
     "watch:tsc": "tsc -w -p tsconfig.release.json",
     "watch:web": "rollup --watch --config src/rollup.ts",
-    "watch": "concurrently --kill-others \"npm run watch:tsc\" \"npm run watch:web\"",
+    "watch": "npm run clean && concurrently --kill-others \"npm run watch:tsc\" \"npm run watch:web\"",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
-    "test:server": "http-server ./tests/assets"
+    "test:server": "http-server ./tests/assets",
+    "release": "np --no-cleanup",
+    "version": "npm run build"
   },
   "license": "Apache-2.0",
   "peerDependencies": {
-    "playwright-core": "0.11.1"
+    "playwright-core": "*"
   },
   "dependencies": {},
   "devDependencies": {
@@ -40,6 +42,7 @@
     "eslint-plugin-jest": "~23.7.0",
     "http-server": "^0.12.1",
     "jest": "~25.1.0",
+    "np": "^6.2.0",
     "playwright": "^0.11.1",
     "prettier": "~1.19.1",
     "rimraf": "~3.0.2",
