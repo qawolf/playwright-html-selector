@@ -21,7 +21,7 @@
     "watch": "npm run clean && concurrently --kill-others \"npm run watch:tsc\" \"npm run watch:web\"",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
-    "test:server": "http-server ./tests/assets",
+    "test:server": "serve --listen 7000 -s ./tests/assets",
     "release": "np --no-cleanup",
     "version": "npm run build"
   },
@@ -40,7 +40,6 @@
     "eslint": "~6.8.0",
     "eslint-config-prettier": "~6.10.0",
     "eslint-plugin-jest": "~23.7.0",
-    "http-server": "^0.12.1",
     "jest": "~25.1.0",
     "np": "^6.2.0",
     "playwright": "^0.11.1",
@@ -50,6 +49,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
+    "serve": "^11.3.0",
     "ts-jest": "~25.2.0",
     "typescript": "~3.8.2"
   }
