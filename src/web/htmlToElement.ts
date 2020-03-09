@@ -1,7 +1,15 @@
-export const htmlToElement = (html: string): HTMLElement => {
-  const template = document.createElement('template');
-  html = html.trim(); // remove whitespace
-  template.innerHTML = html;
+export const htmlToElement = (htmlToParse: string): HTMLElement => {
+  const html = htmlToParse.trim();
 
-  return template.content.firstChild as HTMLElement;
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  if (html.startsWith('<html')) {
+    return doc.firstElementChild as HTMLElement;
+  }
+
+  if (html.startsWith('<body')) {
+    return doc.body;
+  }
+
+  return doc.body.firstElementChild as HTMLElement;
 };
