@@ -1,24 +1,15 @@
-export const getTags = (html: string): string[] => html.match(/(<([^>]+)>)/g);
+export const htmlToElement = (htmlToParse: string): HTMLElement => {
+  const html = htmlToParse.trim();
 
-export const getTagName = (tag: string): string => {
-  return tag.replace(/<|>|\//g, '').trim();
-};
+  const doc = new DOMParser().parseFromString(html, 'text/html');
 
-export const htmlToElement = (html: string): HTMLElement => {
-  const tags = getTags(html);
-  const tagName = getTagName(tags[0]);
-
-  const element = document.createElement(tagName);
-
-  // remove the opening tag
-  let innerHtml = html.substring(tags[0].length);
-  if (tags.length > 1) {
-    // remove the closing tag
-    const closingTag = tags[tags.length - 1];
-    innerHtml = innerHtml.substring(0, innerHtml.length - closingTag.length);
+  if (html.startsWith('<html')) {
+    return doc.firstElementChild as HTMLElement;
   }
 
-  element.innerHTML = innerHtml;
+  if (html.startsWith('<body')) {
+    return doc.body;
+  }
 
-  return element;
+  return doc.body.firstElementChild as HTMLElement;
 };

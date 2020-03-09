@@ -74,4 +74,48 @@ describe('htmlToElement', () => {
       },
     ]);
   });
+
+  it('it deserializes html', async () => {
+    const result = await page.evaluate(() => {
+      const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
+      const element = htmlselector.htmlToElement(
+        "<html data-qa='test-html'>inner text</html>",
+      );
+      return htmlselector.serializeElementAndDescendants(element);
+    });
+
+    expect(result).toEqual([
+      {
+        'data-qa': 'test-html',
+        innerText: 'inner text',
+        tagName: 'html',
+      },
+      {
+        innerText: '',
+        tagName: 'head',
+      },
+      {
+        innerText: 'inner text',
+        tagName: 'body',
+      },
+    ]);
+  });
+
+  it('it deserializes body', async () => {
+    const result = await page.evaluate(() => {
+      const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
+      const element = htmlselector.htmlToElement(
+        "<body data-qa='test-body'>inner text</body>",
+      );
+      return htmlselector.serializeElementAndDescendants(element);
+    });
+
+    expect(result).toEqual([
+      {
+        'data-qa': 'test-body',
+        innerText: 'inner text',
+        tagName: 'body',
+      },
+    ]);
+  });
 });
