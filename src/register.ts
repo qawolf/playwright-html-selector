@@ -1,6 +1,9 @@
+import Debug from 'debug';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { Page, selectors } from 'playwright-core';
+
+const debug = Debug('playwright-html-selector:register');
 
 export const WEB_SCRIPT = readFileSync(
   join(__dirname, '../build/htmlselector.web.js'),
@@ -8,7 +11,10 @@ export const WEB_SCRIPT = readFileSync(
 );
 
 // make it playwright friendly
-const PLAYWRIGHT_WEB_SCRIPT = WEB_SCRIPT.replace('var htmlselector = ', '')
+export const HTML_SELECTOR_ENGINE = WEB_SCRIPT.replace(
+  'var htmlselector = ',
+  '',
+)
   // remove the last semicolon
   .slice(0, -2);
 
@@ -17,5 +23,7 @@ export const addHtmlSelectorWeb = (page: Page): Promise<[unknown, unknown]> =>
   Promise.all([page.evaluate(WEB_SCRIPT), page.addInitScript(WEB_SCRIPT)]);
 
 // register the selector engine
-export const register = (): Promise<void> =>
-  selectors.register('html', PLAYWRIGHT_WEB_SCRIPT);
+export const register = async (): Promise<void> => {
+  await selectors.register('html', HTML_SELECTOR_ENGINE);
+  debug('registered html selector engine');
+};

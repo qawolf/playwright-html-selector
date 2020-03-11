@@ -1,8 +1,6 @@
 import { queryHtmlSelectorAll } from './query';
 
 export const createEngine = {
-  name: 'html',
-
   create(): null {
     // unclear how to invoke this so we will not implement it yet
     return null;
