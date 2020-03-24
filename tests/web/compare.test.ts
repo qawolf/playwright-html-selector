@@ -17,16 +17,14 @@ const buildCompareFunction = (
 ): ((a: string, b: string) => Promise<ElementComparison | boolean>) => {
   return (a: string, b: string): Promise<ElementComparison | boolean> => {
     return page.evaluate(
-      (functionName, a, b) => {
+      ({ a, b, functionName }) => {
         const htmlselector: HtmlSelectorWeb = (window as any).htmlselector;
         const elementA = htmlselector.htmlToElement(a);
         const elementB = htmlselector.htmlToElement(b);
 
         return htmlselector[functionName](elementA, elementB);
       },
-      functionName,
-      a,
-      b,
+      { functionName, a, b },
     );
   };
 };
