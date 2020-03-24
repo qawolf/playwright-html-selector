@@ -1,6 +1,6 @@
 {
   "name": "playwright-html-selector",
-  "version": "0.4.0",
+  "version": "0.12.0",
   "description": "Select an element by it's HTML",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
