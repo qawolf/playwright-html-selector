@@ -12,6 +12,7 @@ export interface Similarity {
 
 const STRONG_MATCH_KEYS = [
   'alt',
+  'for',
   'id',
   'innerText',
   'name',
